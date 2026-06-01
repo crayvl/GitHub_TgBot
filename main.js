@@ -11,9 +11,10 @@ server.post('/webhook', async(req, res) => {
 
   if(eventType == 'ping') res.sendStatus(200);
   else if(eventType == 'push') {
-    
-    const payload = req.body;
-    console.log('Received webhook data:', payload.repository.full_name);
+
+    const payload = JSON.parse(req.body);
+    console.log('Received webhook data:', payload);
+    console.log('Repository name:', payload.repository.full_name);
 
     res.sendStatus(200);
   }
