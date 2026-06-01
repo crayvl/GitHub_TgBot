@@ -2,6 +2,8 @@ import express from 'express';
 
 const server = express();
 
+server.use(express.json());
+
 server.get('/ping', (req, res) => {
   res.sendStatus(200);
 });
@@ -12,11 +14,15 @@ server.post('/webhook', async(req, res) => {
   if(eventType == 'ping') res.sendStatus(200);
   else if(eventType == 'push') {
 
-    const payload = JSON.parse(req.body);
-    console.log('Received webhook data:', payload);
+    const payload = req.body;
     console.log('Repository name:', payload.repository.full_name);
+    console.log('Pusher: ', payload.repository.pusher.name);
 
     res.sendStatus(200);
+  }
+  else {
+    console.log('Received unsupported event type:', eventType);
+    res.sendStatus(202);
   }
 
 
