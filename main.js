@@ -6,9 +6,19 @@ server.get('/ping', (req, res) => {
   res.sendStatus(200);
 });
 
-server.post('/webhook', (req, res) => {
-  console.log('Received webhook data:', req.body);
-  res.sendStatus(200);
+server.post('/webhook', async(req, res) => {
+  const eventType = req.headers['x-github-event'];
+
+  if(eventType == 'ping') res.sendStatus(200);
+  else if(eventType == 'push') {
+    
+    const payload = req.body;
+    console.log('Received webhook data:', payload.repository.full_name);
+
+    res.sendStatus(200);
+  }
+
+
 });
 
 
