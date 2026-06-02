@@ -1,7 +1,7 @@
 import express from 'express';
 import TelegramBot from 'node-telegram-bot-api';
 
-import { startBot, sendWebhook } from './bot/telegram.js';
+import { startBot, sendWebhook } from './src/bot/telegram.js';
 
 
 const server = express();
