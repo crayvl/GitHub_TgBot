@@ -23,13 +23,12 @@ server.post('/webhook', async(req, res) => {
 
     await sendWebhook(req.body);
 
-    console.log('Repository name:', payload.repository.full_name);
-    console.log('Pusher: ', payload.pusher.name);
+    console.log("[INFO] New push was received.");
 
     res.sendStatus(200);
   }
   else {
-    console.log('Received unsupported event type:', eventType);
+    console.log('[WARNING] Received unsupported event type:', eventType);
     res.sendStatus(202);
   }
 

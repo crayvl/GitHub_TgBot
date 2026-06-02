@@ -29,8 +29,18 @@ export async function startBot() {
 
 export async function sendWebhook(payload) {
 
+    if (!bot) {
+        console.error("[ERROR] Bot is not initialized.");
+        return;
+    }
     let message = `📥 Новый пуш в ${payload.repository.full_name}\n👤 Пушер: ${payload.pusher.name}\n`;
 
-    await bot.sendMessage(chatID, message);
+    try {
+        await bot.sendMessage(chatID, message);
+        console.log("[INFO] The message has been delivered.");
+    } catch(error){
+        console.log("[ERROR] The message was not delivered.", error.message);
+
+    }
             
 }
