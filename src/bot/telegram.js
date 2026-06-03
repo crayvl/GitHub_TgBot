@@ -34,38 +34,45 @@ export async function sendWebhook(payload) {
     }
     const commits = payload.commits;
 
-    let message = `📥 Новый пуш в ${payload.repository.full_name}\n \
-                    👤 Пушер: ${payload.pusher.name}\n`;
+    let inlineKeyboard = {
+            inline_keyboard: [
+                [{ text: 'Посмотреть репозиторий', url: payload.repository.html_url }]]};
+
+    let message = `📥 Новый пуш в ${payload.repository.full_name}\n` +
+    `👤 Пушер: ${payload.pusher.name}\n`;
     
     for(let i = 0; i < commits.length; i++)
     {
+        if(i >= 5) { return message += `\n\n... и еще ${commits.length - 5} коммитов.` }
+
         const msg = commits[i].message.split("\n");
         console.log(msg);
 
-        message += `\n~~~~~~~~${commits[i].timestamp.slice(10)}~~~~~~~~~~\n \
-            ~~~~~~~~~~~~${commits[i].timestamp.slice(11, 16)}~~~~~~~~~~~~\n \
-            📌 [commit #${i+1}] \
-            👤 Автор: ${commits[i].author.username}\n\n \
-            📝 Название:\n<b>${msg[0]}</b>\n`
+        message += `\n\n~~~~~~~~${commits[i].timestamp.slice(0, 10)}~~~~~~~~~~~\n` +
+            `~~~~~~~~~~~${commits[i].timestamp.slice(11, 16)}~~~~~~~~~~~~~\n` +
+            `📌 [commit #${i+1}]` +
+            `👤 Автор: ${commits[i].author.username}\n\n` +
+            `📝 Название:\n<b>${msg[0]}</b>\n`
 
         if(msg.length >= 2) {
-        message += `📃 Описание:\n<blockquote>`
-        for(let y = 1; y < msg.length; y++) {
-            message += `${msg[y]}`
+        message += `📃 Описание:\n<blockquote>${msg[1]}`
+        for(let y = 2; y < msg.length; y++) {
+            message += `\n${msg[y]}`
         }
         message += '</blockquote>'
         }
+
+        inlineKeyboard.inline_keyboard.push([{ text: `Посмотреть коммит #${i+1}`, url: commits[i].url }]);
     }
 
     
     console.log(message);
 
     try {
-        await bot.sendMessage(chatID, message, {parseMode: "HTML"});
+        await bot.sendMessage(chatID, message, {parse_mode: "HTML", reply_markup: inlineKeyboard});
         console.log("[INFO] The message has been delivered.");
     } catch(error){
         console.log("[ERROR] The message was not delivered.", error.message);
 
     }
-            
 }
