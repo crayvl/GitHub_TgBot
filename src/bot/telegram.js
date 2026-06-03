@@ -45,7 +45,7 @@ export async function sendWebhook(payload) {
     {
         if(i >= 5) { return message += `\n\n... и еще ${commits.length - 5} коммитов.` }
 
-        const msg = commits[i].message.split("\n");
+        const msg = commits[i].message.split("\\n");
         console.log(msg);
 
         message += `\n\n~~~~~~~~${commits[i].timestamp.slice(0, 10)}~~~~~~~~~~~\n` +
