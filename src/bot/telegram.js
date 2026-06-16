@@ -9,8 +9,10 @@ const token = process.env.BOT_TOKEN;
 const chatID = process.env.CHAT_ID; // for test
 let bot = null;
 
+const onTEST = true;
+
 export async function startBot() {
-    if (bot) {
+    if (bot||onTEST) {
         console.log('[Warning] Bot is already running.');
         return bot;
     }
@@ -75,4 +77,8 @@ export async function sendWebhook(payload) {
         console.log("[ERROR] The message was not delivered.", error.message);
 
     }
+}
+
+export async function sendMessage(message) {
+    await bot.sendMessage(chatID, message);
 }

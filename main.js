@@ -1,7 +1,7 @@
 import express from 'express';
 import TelegramBot from 'node-telegram-bot-api';
 
-import { startBot, sendWebhook } from './src/bot/telegram.js';
+import { startBot, sendWebhook, sendMessage } from './src/bot/telegram.js';
 
 
 const server = express();
@@ -16,7 +16,13 @@ server.post('/webhook', async(req, res) => {
   const eventType = req.headers['x-github-event'];
 
   
-  if(eventType == 'ping') res.sendStatus(200);
+  if(eventType == 'ping')
+  {
+    console.log("[INFO] New repository has been connected.");
+    await sendMessage("📌 Подключён новый репозиторий.\n" +
+      `${req.body.repository.full_name}`);
+    res.sendStatus(200);
+  }
   else if(eventType == 'push') {
 
     const payload = req.body; 
@@ -40,5 +46,5 @@ server.post('/webhook', async(req, res) => {
 server.listen(3000,'0.0.0.0', async() => {
   console.log('Server is running.');
 
-  await startBot();
+  await startBot(); 
 });
