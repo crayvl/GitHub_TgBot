@@ -9,10 +9,9 @@ const token = process.env.BOT_TOKEN;
 const chatID = process.env.CHAT_ID; // for test
 let bot = null;
 
-const onTEST = true;
 
 export async function startBot() {
-    if (bot||onTEST) {
+    if (bot) {
         console.log('[Warning] Bot is already running.');
         return bot;
     }
@@ -72,13 +71,26 @@ export async function sendWebhook(payload) {
 
     try {
         await bot.sendMessage(chatID, message, {parse_mode: "HTML", reply_markup: inlineKeyboard});
-        console.log("[INFO] The message has been delivered.");
+        console.log("[INFO/webhook] The message has been delivered.");
     } catch(error){
-        console.log("[ERROR] The message was not delivered.", error.message);
+        console.log("[ERROR/webhook] The message was not delivered.", error.message);
 
     }
 }
 
-export async function sendMessage(message) {
-    await bot.sendMessage(chatID, message);
+export async function sendPing(payload) {
+        if (!bot) {
+        console.error("[ERROR] Bot is not initialized.");
+        return;
+    }
+        try {
+            await bot.sendMessage(chatID, "📌 Подключён новый репозиторий.\n" +
+                `${payload.repository.full_name}`, {reply_markup: [{ text: 'Посмотреть репозиторий', url: payload.repository.html_url }]});
+
+        console.log("[INFO/ping] The message has been delivered.");
+    } catch(error){
+
+        console.log("[ERROR/ping] The message was not delivered.", error.message);
+    }
+
 }
