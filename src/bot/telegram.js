@@ -79,13 +79,13 @@ export async function sendWebhook(payload) {
 }
 
 export async function sendPing(payload) {
-        if (!bot) {
-        console.error("[ERROR] Bot is not initialized.");
-        return;
+    if (!bot) {
+    console.error("[ERROR] Bot is not initialized.");
+    return;
     }
-        try {
-            await bot.sendMessage(chatID, "📌 Подключён новый репозиторий.\n" +
-                `${payload.repository.full_name}`, {reply_markup: [{ text: 'Посмотреть репозиторий', url: payload.repository.html_url }]});
+    try {
+        await bot.sendMessage(chatID, "📌 Подключён новый репозиторий.\n" +
+            `${payload.repository.full_name}`, {reply_markup: { inline_keyboard: [[{ text: 'Посмотреть репозиторий', url: payload.repository.html_url }]] }});
 
         console.log("[INFO/ping] The message has been delivered.");
     } catch(error){
